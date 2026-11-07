@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>نظام إدارة وتحليل نتائج الطلاب</title>
+</head>
+<body>
+
+<script>
+
+// =================================
+// 1. إنشاء Class Student
+// =================================
+
+class Student {
+
+    constructor(id, name, grades, attendance) {
+        this.id = id;
+        this.name = name;
+        this.grades = grades;
+        this.attendance = attendance;
+    }
+
+    // =================================
+    // 2. حساب متوسط درجات الطالب
+    // =================================
+
+    calculateAverage() {
+        const total = this.grades.reduce(
+            (sum, grade) => sum + grade, 0
+        );
+
+        if (this.grades.length > 0) {
+            return total / this.grades.length;
+        } else {
+            return 0;
+        }
+    }
+
+    // =================================
+    // 3. تحديد التقدير بالحروف
+    // =================================
+
+    getGrade() {
+        const average = this.calculateAverage();
+
+        if (average >= 90) {
+            return "A";
+        } else if (average >= 80) {
+            return "B";
+        } else if (average >= 70) {
+            return "C";
+        } else if (average >= 60) {
+            return "D";
+        } else if (average >= 50) {
+            return "E";
+        } else {
+            return "F";
+        }
+    }
+
+    // =================================
+    // 4. تحديد النتيجة النهائية
+    // =================================
+
+    getFinalResult() {
+        const average = this.calculateAverage();
+
+        if (average >= 50 && this.attendance >= 75) {
+            return "ناجح";
+        } else {
+            return "يحتاج مراجعة";
+        }
+    }
+}
+
+// =================================
+// 5. إنشاء مصفوفة الطلاب
+// =================================
+
+const studentsList = [
+
+    new Student(101, "Ahmed", [80, 70, 75], 90),
+
+    new Student(102, "Sara", [45, 42, 48], 85),
+
+    new Student(103, "Ali", [50, 45, 48], 80),
+
+    new Student(104, "Eman", [95, 90, 85], 95)
+
+];
+
+// =================================
+// 6. طباعة تقرير جميع الطلاب
+// =================================
+
+console.log("===== Students Report =====");
+
+studentsList.forEach((student) => {
+
+    console.log({
+        name: student.name,
+        average: student.calculateAverage(),
+        grade: student.getGrade(),
+        result: student.getFinalResult()
+    });
+
+});
+
+// =================================
+// 7. استخراج الطلاب المتعثرين
+// باستخدام filter
+// =================================
+
+const strugglingStudents = studentsList.filter((student) => {
+
+    const average = student.calculateAverage();
+
+    return average >= 40 && average <= 49;
+
+});
+
+// =================================
+// 8. إضافة 5 درجات رأفة
+// باستخدام map
+// =================================
+
+const mercyStudents = strugglingStudents.map((student) => {
+
+    return {
+        id: student.id,
+        name: student.name,
+        oldAverage: student.calculateAverage(),
+        newAverage: student.calculateAverage() + 5
+    };
+
+});
+
+// =================================
+// 9. جمع المتوسطات الجديدة
+// باستخدام reduce
+// =================================
+
+const totalNewAverages = mercyStudents.reduce(
+    (sum, student) => sum + student.newAverage,
+    0
+);
+
+// =================================
+// 10. حساب متوسط الرأفة
+// مع الحماية من القسمة على صفر
+// =================================
+
+let mercyAverage = 0;
+
+if (mercyStudents.length > 0) {
+
+    mercyAverage = totalNewAverages / mercyStudents.length;
+
+}
+
+// =================================
+// 11. طباعة تقرير لجنة الرأفة
+// =================================
+
+console.log("===== Mercy Committee Report =====");
+
+console.table(mercyStudents);
+
+console.log("متوسط درجات الطلاب بعد الرأفة:", mercyAverage);
+
+</script>
+
+</body>
+</html>
